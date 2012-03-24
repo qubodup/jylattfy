@@ -32,6 +32,7 @@
   <meta property="og:type" content="game" />
   <meta property="og:url" content="http://qubodup.github.com/jylattfy/" />
   <meta property="og:image" content="http://qubodup.github.com/jylattfy/jylattfy.png" />
+  <link rel="shortcut icon" href="favicon.ico" />
   <style>
 body {
   margin: 0px;
@@ -49,9 +50,64 @@ canvas {
   margin-top: -180px; /*set to a negative number 1/2 of your height*/
   margin-left: -320px; /*set to a negative number 1/2 of your width*/
 }
+#note {
+  text-align: center;
+}
 </style>
+</head>
+<body id="body" onmousedown="return false;">
+  <div id="container"></div>
+  <div><p id="note"></p></div>
 <script type="text/javascript" src="lib/kinetic-v3.8.5.min.js"></script>
+<script type="text/javascript" src="lib/audia-min.js"></script>
 <script type="text/javascript">
+(function (event) {
+
+// Supported? If not, get Chrome, son!
+if (!Audia.supported) {
+  var note = document.getElementById("note");
+  note.innerHTML = "Sorry, no sound (no AudioContext support)!";
+}
+
+if (Audia.supported) {
+  //  Jump sound
+  var jumpSound = new Audia("jump.wav");
+  //  Steps sound
+  var stepsSound = new Audia("steps.wav");
+  // Loop
+  stepsSound.loop = true;
+  // Win sound
+  var winSound = new Audia("pappapia.wav");
+
+  // Jump events
+  var duringJump = false;
+  var bodyInput = document.getElementById("body");
+  bodyInput.addEventListener("keydown", function (event) {
+    // Jump sound start and lock
+    if (event.keyCode == 38 || event.keyCode == 32) {
+      if (!duringJump) {
+        jumpSound.play();
+        duringJump = true
+      }
+    }
+    // Step sound start
+    if (event.keyCode == 39 || event.keyCode == 37) {
+      stepsSound.play();
+    }
+  }, false);
+
+  bodyInput.addEventListener("keyup", function (event) {
+    // Step sound stop
+    if (event.keyCode == 39 || event.keyCode == 37) {
+      stepsSound.stop();
+    }
+    // Jump sound release
+    if ((event.keyCode == 38 || event.keyCode == 32) && duringJump) {
+      duringJump = false;
+    }
+  }, false);
+}
+
 function loadImages(sources, callback){
   var images = {};
   var loadedImages = 0;
@@ -85,7 +141,7 @@ function drawBackground(background, levelImg, text){
   var context = background.getContext();
   
   context.drawImage(levelImg, 0, 0);
-  context.font = "18pt Sans-serif";
+  context.font = "16pt Monospace";
   context.textAlign = "center";
   context.fillStyle = "black";
   context.fillText(text, canvas.width / 2, 40);
@@ -148,6 +204,10 @@ function initStage(images){
               if (++score >= 1) {
                 var text = "Excellent! You are not easy to be tricked, eh?"
                 drawBackground(background, images.level, text);
+                if (Audia.supported) {
+                  winSound.play();
+                }
+  //  Jump sound
               }
           }
         });
@@ -202,56 +262,6 @@ window.onload = function(){
   };
   loadImages(sources, initStage);
 };
-</script>
-</head>
-<body id="body" onmousedown="return false;">
-  <div id="container"></div>
-  <script type="text/javascript" src="lib/audia-min.js"></script>
-  <script>
-(function (event) {
-
-// Supported? If not, get Chrome, son!
-if (!Audia.supported) {
-  document.body.innerHTML = "Sorry, your browser doesn't support AudioContext.";
-  return;
-}
-
-//  Jump sound
-var jumpSound = new Audia("jump.wav");
-//  Steps sound
-var stepsSound = new Audia("steps.wav");
-// Loop
-  stepsSound.loop = true;
-
-// Jump events
-var duringJump = false;
-var bodyInput = document.getElementById("body");
-bodyInput.addEventListener("keydown", function (event) {
-  // Jump sound start and lock
-  if (event.keyCode == 38 || event.keyCode == 32) {
-    if (!duringJump) {
-      jumpSound.play();
-      duringJump = true
-    }
-  }
-  // Step sound start
-  if (event.keyCode == 39 || event.keyCode == 37) {
-    stepsSound.play();
-  }
-}, false);
-
-bodyInput.addEventListener("keyup", function (event) {
-  // Step sound stop
-  if (event.keyCode == 39 || event.keyCode == 37) {
-    stepsSound.stop();
-  }
-  // Jump sound release
-  if ((event.keyCode == 38 || event.keyCode == 32) && duringJump) {
-    duringJump = false;
-  }
-}, false);
-
-
 }());
 
   </script>

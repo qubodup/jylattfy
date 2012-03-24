@@ -9,6 +9,7 @@ code written using vim.
 tested using chrome.
 images made using gimp.
 sounds generated using sfxr.
+pappapia recorded using an htc wildfire aka buzz smartphone and edited in audacity.
 
 code licensed under MIT/GPL (see code comments).
 images released to public domain/cc0 <http://creativecommons.org/publicdomain/zero/1.0/>.
