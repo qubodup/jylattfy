@@ -1,0 +1,210 @@
+<!DOCTYPE HTML>
+<!--
+ * Jump Your Lazy Ass To The Flag, Yo!
+ * http://qubodup.net/
+ * Copyright 2012, Iwan Gabovitch <qubodup@gmail.com>
+ * Licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Copyright (C) 2012 Iwan Gabovitch <qubodup@gmail.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+-->
+<html>
+<head>
+  <title>Jump Your Lazy Ass To The Flag, Yo! - A tricky platformer game in your browser</title>
+  <meta property="og:title" content="Jump Your Lazy Ass To The Flag, Yo! - Tricky platformer HTML5 game" />
+  <meta property="og:type" content="game" />
+  <meta property="og:url" content="http://qubodup.github.com/jylattfy/" />
+  <meta property="og:image" content="http://qubodup.github.com/jylattfy/jylattfy.png" />
+  <style>
+body {
+  margin: 0px;
+  padding: 0px;
+}
+canvas {
+  border: none;
+}
+#container {
+  height: 360px;
+  width: 640px;
+  position:absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -180px; /*set to a negative number 1/2 of your height*/
+  margin-left: -320px; /*set to a negative number 1/2 of your width*/
+}
+</style>
+<script type="text/javascript" src="lib/kinetic-v3.8.5.min.js"></script>
+<script type="text/javascript">
+function loadImages(sources, callback){
+  var images = {};
+  var loadedImages = 0;
+  var numImages = 0;
+  for (var src in sources) {
+    numImages++;
+  }
+  for (var src in sources) {
+    images[src] = new Image();
+    images[src].onload = function(){
+      if (++loadedImages >= numImages) {
+        callback(images);
+      }
+    };
+    images[src].src = sources[src];
+  }
+}
+function isNear(char, target){
+  var c = char;
+  var t = target;
+  if (c.x > t.x - 40 && c.x < t.x + 40 && c.y > t.y - 40 && c.y < t.y + 40) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+function drawBackground(background, levelImg, text){
+  var canvas = background.getCanvas();
+  var context = background.getContext();
+  
+  context.drawImage(levelImg, 0, 0);
+  context.font = "18pt Sans-serif";
+  context.textAlign = "center";
+  context.fillStyle = "black";
+  context.fillText(text, canvas.width / 2, 40);
+}
+
+function initStage(images){
+  var stage = new Kinetic.Stage("container", 640, 360);
+  var background = new Kinetic.Layer();
+  var characterLayer = new Kinetic.Layer();
+  var score = 0;
+  
+  // image positions
+  var characters = {
+    marie: {
+      x: 28,
+      y: 274 
+    },
+  };
+  
+  var flags = {
+    flag: {
+      x: 589,
+      y: 210
+    },
+  };
+  
+  // create draggable characters   
+  for (var key in characters) {
+    // anonymous function to induce scope
+    (function(){
+      var privKey = key;
+      var anim = characters[key];
+      
+      var character = new Kinetic.Image({
+          image: images[key],
+          x: anim.x,
+          y: anim.y,
+          draggable: true
+        });
+        
+        character.on("dragstart", function(){
+          character.moveToTop();
+          characterLayer.draw();
+        });
+        
+        /*
+         * check if character is in the right spot and
+         * snap into place if it is
+         */
+        character.on("dragend", function(){
+          var flag = flags["flag"];
+          if (!character.inRightPlace && isNear(character, flag)) {
+              character.x = flag.x-28;
+              character.y = flag.y-16;
+              characterLayer.draw();
+              // disable drag and drop
+              character.draggable(false);
+              character.inRightPlace = true;
+              
+              if (++score >= 1) {
+                var text = "Excellent! You are not easy to be tricked, eh?"
+                drawBackground(background, images.level, text);
+              }
+          }
+        });
+        
+        // make character change on mouseover
+        character.on("mouseover", function(){
+          character.setImage(images[privKey + "_hover"]);
+          characterLayer.draw();
+          document.body.style.cursor = "pointer";
+        });
+        
+        // return character on mouseout
+        character.on("mouseout", function(){
+          character.setImage(images[privKey]);
+          characterLayer.draw();
+          document.body.style.cursor = "default";
+        });
+        
+        characterLayer.add(character);
+    })();
+  }
+  
+  // create flags  
+  for (var key in flags) {
+    // anonymous function to induce scope
+    (function(){
+      var imageObj = images[key];
+      var out = flags[key];
+      
+      var flag = new Kinetic.Image({
+          image: imageObj,
+          x: out.x,
+          y: out.y
+      });
+
+      characterLayer.add(flag);
+    })();
+  }
+  
+  stage.add(background);
+  stage.add(characterLayer);
+  
+  drawBackground(background, images.level, "Marie, jump to the flag!");
+}
+
+window.onload = function(){
+  var sources = {
+      level: "bg.png",
+      marie: "marie.png",
+      marie_hover: "marie_hover.png",
+      flag: "flag.png",
+  };
+  loadImages(sources, initStage);
+};
+</script>
+</head>
+<body onmousedown="return false;">
+  <div id="container"></div>
+</body>
+</html>
