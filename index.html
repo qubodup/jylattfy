@@ -41,21 +41,36 @@ body {
 canvas {
   border: none;
 }
-#container {
-  height: 360px;
+#wrap {
+  height: 420px;
   width: 640px;
   position:absolute;
   top: 50%;
   left: 50%;
-  margin-top: -180px; /*set to a negative number 1/2 of your height*/
+  margin-top: -210px; /*set to a negative number 1/2 of your height*/
   margin-left: -320px; /*set to a negative number 1/2 of your width*/
+}
+#container {
+  height: 360px;
+  width: 640px;
 }
 #note {
   text-align: center;
 }
 </style>
+<script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */</script>
 </head>
 <body id="body" onmousedown="return false;">
+<div id="wrap">
   <div id="container"></div>
   <div><p id="note"></p></div>
 <script type="text/javascript" src="lib/kinetic-v3.8.5.min.js"></script>
@@ -265,5 +280,31 @@ window.onload = function(){
 }());
 
   </script>
+  <div style="clear:both;"><p id="othernote">By <a href="http://qubodup.net">qubodup</a> | <a href="http://github.com/qubodup/jylattfy">source</a> | :q
+</p></div>
+  <div id="spam">
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<div class="fb-like" data-send="false" data-layout="button_count" data-width="150" data-show-faces="false" data-action="recommend"></div>
+<a href="https://twitter.com/share" class="twitter-share-button" data-via="qubodup">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<g:plusone size="small"></g:plusone>
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>
+<a class="FlattrButton" style="display:none;" rev="flattr;button:compact;" href="http://qubodup.github.com/jylattfy/"></a>
+<noscript><a href="http://flattr.com/thing/595452/Jump-Your-Lazy-Ass-To-The-Flag-Yo-Tricky-platformer-HTML-5-game" target="_blank">
+<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a></noscript>
+  </div>
+</div>
 </body>
 </html>
