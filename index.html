@@ -190,7 +190,7 @@ function initStage(images){
   stage.add(background);
   stage.add(characterLayer);
   
-  drawBackground(background, images.level, "Marie, jump to the flag!");
+  drawBackground(background, images.level, "Marie, jump to the flag! Use the arrow keys!");
 }
 
 window.onload = function(){
@@ -204,7 +204,56 @@ window.onload = function(){
 };
 </script>
 </head>
-<body onmousedown="return false;">
+<body id="body" onmousedown="return false;">
   <div id="container"></div>
+  <script type="text/javascript" src="lib/audia-min.js"></script>
+  <script>
+(function (event) {
+
+// Supported? If not, get Chrome, son!
+if (!Audia.supported) {
+  document.body.innerHTML = "Sorry, your browser doesn't support AudioContext.";
+  return;
+}
+
+//  Jump sound
+var jumpSound = new Audia("jump.wav");
+//  Steps sound
+var stepsSound = new Audia("steps.wav");
+// Loop
+  stepsSound.loop = true;
+
+// Jump events
+var duringJump = false;
+var bodyInput = document.getElementById("body");
+bodyInput.addEventListener("keydown", function (event) {
+  // Jump sound start and lock
+  if (event.keyCode == 38 || event.keyCode == 32) {
+    if (!duringJump) {
+      jumpSound.play();
+      duringJump = true
+    }
+  }
+  // Step sound start
+  if (event.keyCode == 39 || event.keyCode == 37) {
+    stepsSound.play();
+  }
+}, false);
+
+bodyInput.addEventListener("keyup", function (event) {
+  // Step sound stop
+  if (event.keyCode == 39 || event.keyCode == 37) {
+    stepsSound.stop();
+  }
+  // Jump sound release
+  if ((event.keyCode == 38 || event.keyCode == 32) && duringJump) {
+    duringJump = false;
+  }
+}, false);
+
+
+}());
+
+  </script>
 </body>
 </html>
