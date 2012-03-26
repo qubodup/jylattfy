@@ -1,8 +1,10 @@
 Jump Your Lazy Ass To The Flag, Yo!
 
-Created by Iwan Gabovitch <qubodup@gmail.com>
+Created by Iwan Gabovitch <qubodup@gmail.com>.
 
-Started during Berlin Mini Jam 2012-03-24 <http://berlinminijam.blogspot.com/>
+Started during Berlin Mini Jam 2012-03-24 <http://berlinminijam.blogspot.com/>.
+
+'Play' it on <http://qubodup.github.com/jylattfy/>!
 
 developed on arch linux.
 code written using vim.
